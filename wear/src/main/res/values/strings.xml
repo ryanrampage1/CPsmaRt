@@ -4,6 +4,7 @@
     <string name="title_activity_bpmselection">BPMSelectionActivity</string>
 
     <string-array name="bpm">
+        <item>Speech</item>
         <item>15 BPM</item>
         <item>100 BPM</item>
         <item>101 BPM</item>

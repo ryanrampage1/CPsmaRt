@@ -5,19 +5,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MainActivity extends WearableActivity {
 
-    private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
-            new SimpleDateFormat("HH:mm", Locale.US);
+    private static final SimpleDateFormat AMBIENT_DATE_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
 
     private Vibrator vb;
+    private boolean running = true;
+
+    @Bind(R.id.hart) ImageView hart;
+    @Bind(R.id.label) TextView label;
 
     public static final int min = 60000;
     public static final int pulse = 200;
@@ -34,6 +42,7 @@ public class MainActivity extends WearableActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setAmbientEnabled();
+        ButterKnife.bind(this);
 
         // debug toast because the bluetooth debugger suxxxx
 //        Toast.makeText(MainActivity.this, Integer.toString(getIntent().getIntExtra(I_BPM, 100)), Toast.LENGTH_SHORT).show();
@@ -45,6 +54,7 @@ public class MainActivity extends WearableActivity {
         else
             bpm =  100;
 
+        label.setText(Integer.toString(bpm) + " BPM");
         // calculate delay from bpm
         int delay = ( min - ( bpm * pulse) ) / bpm;
 
@@ -57,8 +67,22 @@ public class MainActivity extends WearableActivity {
             vibrator[i+1] = (long) delay;
         }
 
-        ImageView hart = (ImageView) findViewById(R.id.button);
-        Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse);
+        final Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse);
+
+        hart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (running) {
+                    vb.cancel();
+                    pulse.cancel();
+                }
+                else {
+                    vb.vibrate(vibrator, -1);
+                    pulse.start();
+                }
+                running = (!running);
+            }
+        });
 
         pulse.setDuration(delay + 200);
         hart.startAnimation(pulse);

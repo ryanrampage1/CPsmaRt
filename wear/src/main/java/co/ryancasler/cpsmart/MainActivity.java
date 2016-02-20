@@ -1,6 +1,7 @@
 package co.ryancasler.cpsmart;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
@@ -16,9 +17,15 @@ public class MainActivity extends WearableActivity {
 
     private Vibrator vb;
 
-    public static int min = 60000;
-    public static int pulse = 200;
+    public static final int min = 60000;
+    public static final int pulse = 200;
+    public static final String I_BPM = "bpmzz";
 
+    public static Intent getIntent(Context c, int bpm){
+        Intent i = new Intent(c, MainActivity.class);
+        i.putExtra(I_BPM, bpm);
+        return i;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +33,17 @@ public class MainActivity extends WearableActivity {
         setContentView(R.layout.activity_main);
         setAmbientEnabled();
 
-        int bpm = 100;
+        // debug toast because the bluetooth debugger suxxxx
+//        Toast.makeText(MainActivity.this, Integer.toString(getIntent().getIntExtra(I_BPM, 100)), Toast.LENGTH_SHORT).show();
+
+        // get the bpm the user selected
+        int bpm;
+        if (getIntent() != null)
+            bpm = getIntent().getIntExtra(I_BPM, 100);
+        else
+            bpm =  100;
+
+        // calculate delay from bpm 
         int delay = ( min - ( bpm * pulse) ) / bpm;
 
         final long[] vibrator = new long[bpm * 2];
@@ -37,7 +54,6 @@ public class MainActivity extends WearableActivity {
         }
 
         vb = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
-
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +66,6 @@ public class MainActivity extends WearableActivity {
     @Override
     public void onEnterAmbient(Bundle ambientDetails) {
         super.onEnterAmbient(ambientDetails);
-//        vb.cancel();
     }
 
     @Override

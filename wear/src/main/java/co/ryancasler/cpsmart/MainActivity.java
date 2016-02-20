@@ -106,4 +106,10 @@ public class MainActivity extends WearableActivity {
     public void onExitAmbient() {
         super.onExitAmbient();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        vb.cancel();
+    }
 }

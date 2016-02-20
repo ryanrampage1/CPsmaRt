@@ -5,8 +5,7 @@ CPsnaRt is a Android wear app to assist with CPR. Users can select the tempo and
 
 # Screen Shots
 
-Tempo Mode
-![Tempo Mode](https://github.com/ryanrampage1/CPsmaRt/blob/master/ScreenShots/mainscreen.png)
+![Tempo Mode](https://github.com/ryanrampage1/CPsmaRt/blob/master/ScreenShots/mainscreen.png "Tempo Mode")
 
 Ambient Mode
 ![Ambient Mode](https://github.com/ryanrampage1/CPsmaRt/blob/master/ScreenShots/ambient.png)

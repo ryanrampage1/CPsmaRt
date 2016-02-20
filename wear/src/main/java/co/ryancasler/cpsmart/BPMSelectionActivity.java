@@ -32,4 +32,6 @@ public class BPMSelectionActivity extends Activity implements WearableListView.C
     }
 
     @Override public void onTopEmptyRegionClick() {}
+
+
 }

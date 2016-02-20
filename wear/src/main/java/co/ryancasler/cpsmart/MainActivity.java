@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
-import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -55,14 +57,15 @@ public class MainActivity extends WearableActivity {
             vibrator[i+1] = (long) delay;
         }
 
-        vb = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+        ImageView hart = (ImageView) findViewById(R.id.button);
+        Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse);
 
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                vb.vibrate(vibrator, -1);
-            }
-        });
+        pulse.setDuration(delay + 200);
+        hart.startAnimation(pulse);
+
+        vb = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+        vb.vibrate(vibrator, -1);
+        
     }
 
     @Override

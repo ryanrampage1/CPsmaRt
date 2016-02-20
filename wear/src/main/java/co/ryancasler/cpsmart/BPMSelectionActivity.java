@@ -17,7 +17,7 @@ public class BPMSelectionActivity extends Activity
                 (WearableListView) findViewById(R.id.wearable_list);
 
         // Sample dataset for the list
-        String[] elements = { "95", "100", "105", "110", "115", "120" };
+        String[] elements = { "95 BPM", "100 BPM", "105 BPM", "110 BPM", "115 BPM", "120 BPM" };
 
         // Assign an adapter to the list
         listView.setAdapter(new Adapter(this, elements));

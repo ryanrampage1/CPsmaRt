@@ -20,6 +20,9 @@ import butterknife.ButterKnife;
 public class MainActivity extends WearableActivity {
 
     private static final SimpleDateFormat AMBIENT_DATE_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
+    public static final int min = 60000;
+    public static final int pulse = 200;
+    public static final String I_BPM = "bpmzz";
 
     private Vibrator vb;
     private boolean running = true;
@@ -27,9 +30,8 @@ public class MainActivity extends WearableActivity {
     @Bind(R.id.hart) ImageView hart;
     @Bind(R.id.label) TextView label;
 
-    public static final int min = 60000;
-    public static final int pulse = 200;
-    public static final String I_BPM = "bpmzz";
+
+    private Animation pulseAnimation;
 
     public static Intent getIntent(Context c, int bpm){
         Intent i = new Intent(c, MainActivity.class);
@@ -67,25 +69,25 @@ public class MainActivity extends WearableActivity {
             vibrator[i+1] = (long) delay;
         }
 
-        final Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse);
+        pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
 
         hart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (running) {
                     vb.cancel();
-                    pulse.cancel();
+                    pulseAnimation.cancel();
                 }
                 else {
                     vb.vibrate(vibrator, -1);
-                    pulse.start();
+                    pulseAnimation.start();
                 }
                 running = (!running);
             }
         });
 
-        pulse.setDuration(delay + 200);
-        hart.startAnimation(pulse);
+        pulseAnimation.setDuration(delay + 200);
+        hart.startAnimation(pulseAnimation);
 
         vb = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
         vb.vibrate(vibrator, -1);
@@ -95,6 +97,9 @@ public class MainActivity extends WearableActivity {
     @Override
     public void onEnterAmbient(Bundle ambientDetails) {
         super.onEnterAmbient(ambientDetails);
+        // stop animations and make the hart black
+        pulseAnimation.cancel();
+        hart.setImageDrawable(getResources().getDrawable(R.drawable.hart_dark, null));
     }
 
     @Override
@@ -105,6 +110,9 @@ public class MainActivity extends WearableActivity {
     @Override
     public void onExitAmbient() {
         super.onExitAmbient();
+        // restart animations and turn hart red
+        pulseAnimation.start();
+        hart.setImageDrawable(getResources().getDrawable(R.drawable.hart, null));
     }
 
     @Override

@@ -43,12 +43,14 @@ public class MainActivity extends WearableActivity {
         else
             bpm =  100;
 
-        // calculate delay from bpm 
+        // calculate delay from bpm
         int delay = ( min - ( bpm * pulse) ) / bpm;
 
         final long[] vibrator = new long[bpm * 2];
 
-        for (int i = 0; i < bpm; i = i+2 ) {
+        vibrator[0] = 0;
+
+        for (int i = 1; i < bpm; i = i+2 ) {
             vibrator[i] = (long) 200;
             vibrator[i+1] = (long) delay;
         }

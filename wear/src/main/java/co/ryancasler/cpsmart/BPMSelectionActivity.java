@@ -40,7 +40,7 @@ public class BPMSelectionActivity extends Activity implements WearableListView.C
             // get beets per minute and pass it to the pulse activity
             bpms = elements[tag].split(" ")[0];
             startActivity(MainActivity.getIntent(this, Integer.parseInt(bpms)));
-            
+
         }
     }
 

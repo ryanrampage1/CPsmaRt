@@ -2,4 +2,31 @@
     <string name="app_name">CPsmaRt</string>
     <string name="hello_world">Hello World!</string>
     <string name="title_activity_bpmselection">BPMSelectionActivity</string>
+
+    <string-array name="bpm">
+        <item>15 BPM</item>
+        <item>100 BPM</item>
+        <item>101 BPM</item>
+        <item>102 BPM</item>
+        <item>103 BPM</item>
+        <item>104 BPM</item>
+        <item>105 BPM</item>
+        <item>106 BPM</item>
+        <item>107 BPM</item>
+        <item>108 BPM</item>
+        <item>109 BPM</item>
+        <item>110 BPM</item>
+        <item>111 BPM</item>
+        <item>112 BPM</item>
+        <item>113 BPM</item>
+        <item>114 BPM</item>
+        <item>115 BPM</item>
+        <item>116 BPM</item>
+        <item>117 BPM</item>
+        <item>118 BPM</item>
+        <item>119 BPM</item>
+        <item>120 BPM</item>
+        <item>240 BPM</item>
+    </string-array>
+
 </resources>

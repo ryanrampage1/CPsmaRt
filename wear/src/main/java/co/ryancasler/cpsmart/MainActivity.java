@@ -2,6 +2,8 @@ package co.ryancasler.cpsmart;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.wearable.activity.WearableActivity;
@@ -106,7 +108,8 @@ public class MainActivity extends WearableActivity {
         super.onEnterAmbient(ambientDetails);
         // stop animations and make the hart black
         pulseAnimation.cancel();
-        hart.setImageDrawable(getResources().getDrawable(R.drawable.hart_dark, null));
+//        hart.setImageDrawable(getResources().getDrawable(R.drawable.hart_dark, null));
+        hart.setColorFilter(Color.parseColor("#0f0f0f"), PorterDuff.Mode.DARKEN);
     }
 
     @Override
@@ -119,7 +122,7 @@ public class MainActivity extends WearableActivity {
         super.onExitAmbient();
         // restart animations and turn hart red
         pulseAnimation.start();
-        hart.setImageDrawable(getResources().getDrawable(R.drawable.hart_beat, null));
+        hart.setColorFilter(null);
     }
 
     @Override

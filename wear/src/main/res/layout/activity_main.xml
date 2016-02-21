@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -21,7 +20,8 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         android:scaleType="fitCenter"
-        android:src="@drawable/hart"
+        android:contentDescription="@string/heart_beating_logo"
+        android:src="@drawable/hart_beat"
         android:layout_margin="10dp"/>
 
     <TextView
@@ -30,8 +30,8 @@
         android:layout_weight="1"
         android:textSize="20sp"
         android:id="@+id/label"
-        android:textColor="@color/white"
-        android:text="40 bpm"/>
+        android:textColor="@color/grey"
+        tools:text="40 bpm"/>
     </LinearLayout>
 
 </android.support.wearable.view.BoxInsetLayout>

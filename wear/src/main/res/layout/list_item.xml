@@ -1,8 +1,8 @@
-<co.ryancasler.cpsmart.WearableListItemLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<co.ryancasler.cpsmart.WearableListItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_vertical"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="60dp">
     <ImageView
         android:id="@+id/circle"
         android:layout_height="20dp"
@@ -18,5 +18,6 @@
         android:fontFamily="sans-serif-condensed-light"
         android:lineSpacingExtra="-4sp"
         android:textColor="@color/cpr_red"
+        tools:text="sample text"
         android:textSize="16sp"/>
 </co.ryancasler.cpsmart.WearableListItemLayout>

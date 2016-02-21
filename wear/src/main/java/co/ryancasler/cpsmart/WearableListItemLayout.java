@@ -29,12 +29,11 @@ public class WearableListItemLayout extends LinearLayout
         this(context, attrs, 0);
     }
 
-    public WearableListItemLayout(Context context, AttributeSet attrs,
-                                  int defStyle) {
+    public WearableListItemLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         mFadedTextAlpha = getResources().getInteger(R.integer.action_text_faded_alpha) / 100f;
-        mFadedCircleColor = getResources().getColor(R.color.red);
+        mFadedCircleColor = getResources().getColor(R.color.grey);
         mChosenCircleColor = getResources().getColor(R.color.cpr_red);
     }
 

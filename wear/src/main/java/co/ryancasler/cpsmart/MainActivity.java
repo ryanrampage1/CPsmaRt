@@ -4,12 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.wearable.activity.WearableActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -17,7 +28,7 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends WearableActivity {
+public class MainActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final SimpleDateFormat AMBIENT_DATE_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
     public static final int min = 60000;
@@ -26,6 +37,11 @@ public class MainActivity extends WearableActivity {
 
     private Vibrator vb;
     private boolean running = true;
+
+    Node mNode; // the connected device to send the message to
+    GoogleApiClient mGoogleApiClient;
+    private static final String HELLO_WORLD_WEAR_PATH = "/hello-world-wear";
+    private boolean mResolvingError=false;
 
     @Bind(R.id.hart) ImageView hart;
     @Bind(R.id.label) TextView label;
@@ -91,7 +107,16 @@ public class MainActivity extends WearableActivity {
 
         vb = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
         vb.vibrate(vibrator, -1);
-        
+
+        //Connect the GoogleApiClient
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+
+        sendMessage();
     }
 
     @Override
@@ -120,4 +145,58 @@ public class MainActivity extends WearableActivity {
         super.onStop();
         vb.cancel();
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
+    /*
+     * Resolve the node = the connected device to send the message to
+     */
+    private void resolveNode() {
+        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult nodes) {
+                for (Node node : nodes.getNodes()) {
+                    mNode = node;
+                }
+            }
+        });
+    }
+
+    /**
+     * Send message to mobile handheld
+     */
+    private void sendMessage() {
+        if (mNode != null && mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
+            Wearable.MessageApi.sendMessage(
+                    mGoogleApiClient, mNode.getId(), HELLO_WORLD_WEAR_PATH, null).setResultCallback(
+                    new ResultCallback<MessageApi.SendMessageResult>() {
+                        @Override
+                        public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+                            if (!sendMessageResult.getStatus().isSuccess()) {
+                                Log.e("TAG", "Failed to send message with status code: "
+                                        + sendMessageResult.getStatus().getStatusCode());
+                            }
+                        }
+                    }
+            );
+        }else{
+            //Improve your code
+        }
+    }
+
+
 }

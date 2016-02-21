@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.wearable.view.WearableListView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -65,10 +66,17 @@ public class BPMSelectionActivity extends Activity implements WearableListView.C
 //            Toast.makeText(BPMSelectionActivity.this, spokenText, Toast.LENGTH_SHORT).show();
 
             // get the bpms part of th result
-            bpms = spokenText.split(" ")[0];
-            startActivity(MainActivity.getIntent(this, Integer.parseInt(bpms)));
+            try {
+                bpms = spokenText.split(" ")[0];
+                int beats = Integer.parseInt(bpms);
+                if (beats <= 250 && beats >= 50)
+                    startActivity(MainActivity.getIntent(this, beats));
+                else
+                    Toast.makeText(BPMSelectionActivity.this, "Not a valid #", Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException e){
+                Toast.makeText(BPMSelectionActivity.this, "Not a valid #", Toast.LENGTH_SHORT).show();
+            }
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

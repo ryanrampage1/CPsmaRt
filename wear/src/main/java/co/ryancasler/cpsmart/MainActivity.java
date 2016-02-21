@@ -4,52 +4,33 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.wearable.activity.WearableActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.MessageApi;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.Wearable;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends WearableActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    private static final SimpleDateFormat AMBIENT_DATE_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
-    public static final int min = 60000;
-    public static final int pulse = 200;
+public class MainActivity extends WearableActivity {
+    public static final int MINUTE = 60000;
+    public static final int PULSE = 200;
+    public static final int COMPRESSIONZ_PER_BREATH = 5;
+    public static final int BREATH_TIME = 1000;
+    public static final int BREATHS_PER_CYCLE = 2;
     public static final String I_BPM = "bpmzz";
 
     private Vibrator vb;
     private boolean running = true;
 
-    Node mNode; // the connected device to send the message to
-    GoogleApiClient mGoogleApiClient;
-    private static final String HELLO_WORLD_WEAR_PATH = "/hello-world-wear";
-    private boolean mResolvingError=false;
-
     @Bind(R.id.hart) ImageView hart;
     @Bind(R.id.label) TextView label;
 
-
     private Animation pulseAnimation;
 
-    public static Intent getIntent(Context c, int bpm){
+    public static Intent getIntent(Context c, int bpm) {
         Intent i = new Intent(c, MainActivity.class);
         i.putExtra(I_BPM, bpm);
         return i;
@@ -70,19 +51,30 @@ public class MainActivity extends WearableActivity implements GoogleApiClient.Co
         if (getIntent() != null)
             bpm = getIntent().getIntExtra(I_BPM, 100);
         else
-            bpm =  100;
+            bpm = 100;
 
         label.setText(Integer.toString(bpm) + " BPM");
         // calculate delay from bpm
-        int delay = ( min - ( bpm * pulse) ) / bpm;
+        int delay = (MINUTE - (bpm * PULSE)) / bpm;
 
-        final long[] vibrator = new long[bpm * 2];
+        int size = COMPRESSIONZ_PER_BREATH * 2  // 1 for vibrate and 1 for delay every vibrate
+                + (2 * BREATHS_PER_CYCLE)       // rescue breath / delay
+                + 1;                            // initial delay
 
-        vibrator[0] = 0;
+        final long[] vibrator = new long[size];                // initial delay
 
-        for (int i = 1; i < bpm; i = i+2 ) {
-            vibrator[i] = (long) 200;
+        vibrator[0] = 0; // slight pause for animation to catch up
+
+        // add compression stuff
+        for (int i = 1; i < COMPRESSIONZ_PER_BREATH * 2 + 1; i = i + 2) {
+            vibrator[i] = (long) PULSE;
             vibrator[i+1] = (long) delay;
+        }
+
+        for (int i = COMPRESSIONZ_PER_BREATH * 2 + 1; i < size; i = i+2){
+            // add vibrate stuff
+            vibrator[i] = (long) BREATH_TIME;
+            vibrator[i+1] = (long) BREATH_TIME;
         }
 
         pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
@@ -93,8 +85,7 @@ public class MainActivity extends WearableActivity implements GoogleApiClient.Co
                 if (running) {
                     vb.cancel();
                     pulseAnimation.cancel();
-                }
-                else {
+                } else {
                     vb.vibrate(vibrator, -1);
                     pulseAnimation.start();
                 }
@@ -102,21 +93,12 @@ public class MainActivity extends WearableActivity implements GoogleApiClient.Co
             }
         });
 
-        pulseAnimation.setDuration(delay + 200);
+        pulseAnimation.setDuration((delay + 200) / 2);
         hart.startAnimation(pulseAnimation);
 
         vb = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
-        vb.vibrate(vibrator, -1);
+        vb.vibrate(vibrator, 0);
 
-        //Connect the GoogleApiClient
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-
-        sendMessage();
     }
 
     @Override
@@ -141,62 +123,8 @@ public class MainActivity extends WearableActivity implements GoogleApiClient.Co
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         vb.cancel();
     }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-
-    /*
-     * Resolve the node = the connected device to send the message to
-     */
-    private void resolveNode() {
-        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult nodes) {
-                for (Node node : nodes.getNodes()) {
-                    mNode = node;
-                }
-            }
-        });
-    }
-
-    /**
-     * Send message to mobile handheld
-     */
-    private void sendMessage() {
-        if (mNode != null && mGoogleApiClient!=null && mGoogleApiClient.isConnected()) {
-            Wearable.MessageApi.sendMessage(
-                    mGoogleApiClient, mNode.getId(), HELLO_WORLD_WEAR_PATH, null).setResultCallback(
-                    new ResultCallback<MessageApi.SendMessageResult>() {
-                        @Override
-                        public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                            if (!sendMessageResult.getStatus().isSuccess()) {
-                                Log.e("TAG", "Failed to send message with status code: "
-                                        + sendMessageResult.getStatus().getStatusCode());
-                            }
-                        }
-                    }
-            );
-        }else{
-            //Improve your code
-        }
-    }
-
-
 }

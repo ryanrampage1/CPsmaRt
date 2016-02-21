@@ -8,18 +8,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
- * Created by ryancasler on 2/20/16.
+ * Created by ryancasler on 2/20/16
  */
 public class Adapter extends WearableListView.Adapter {
-    private String[] mDataset;
-    private final Context mContext;
-    private final LayoutInflater mInflater;
+    private String[] dataset;
+    private final LayoutInflater inflater;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public Adapter(Context context, String[] dataset) {
-        mContext = context;
-        mInflater = LayoutInflater.from(context);
-        mDataset = dataset;
+        inflater = LayoutInflater.from(context);
+        this.dataset = dataset;
     }
 
     // Provide a reference to the type of views you're using
@@ -34,32 +32,28 @@ public class Adapter extends WearableListView.Adapter {
 
     // Create new views for list items
     // (invoked by the WearableListView's layout manager)
-    @Override
-    public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                          int viewType) {
+    @Override public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate our custom layout for list items
-        return new ItemViewHolder(mInflater.inflate(R.layout.list_item, null));
+        return new ItemViewHolder(inflater.inflate(R.layout.list_item, parent, false));
     }
 
     // Replace the contents of a list item
     // Instead of creating new views, the list tries to recycle existing ones
     // (invoked by the WearableListView's layout manager)
-    @Override
-    public void onBindViewHolder(WearableListView.ViewHolder holder,
+    @Override public void onBindViewHolder(WearableListView.ViewHolder holder,
                                  int position) {
         // retrieve the text view
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
         TextView view = itemHolder.textView;
         // replace text contents
-        view.setText(mDataset[position]);
+        view.setText(dataset[position]);
         // replace list item's metadata
         holder.itemView.setTag(position);
     }
 
     // Return the size of your dataset
     // (invoked by the WearableListView's layout manager)
-    @Override
-    public int getItemCount() {
-        return mDataset.length;
+    @Override public int getItemCount() {
+        return dataset.length;
     }
 }

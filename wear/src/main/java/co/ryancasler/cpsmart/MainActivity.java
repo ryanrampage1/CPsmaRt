@@ -19,13 +19,15 @@ import butterknife.ButterKnife;
 public class MainActivity extends WearableActivity {
     public static final int MINUTE = 60000;
     public static final int PULSE = 200;
-    public static final int COMPRESSIONZ_PER_BREATH = 5;
+    public static final int COMPRESSIONZ_PER_BREATH = 10;
     public static final int BREATH_TIME = 1000;
     public static final int BREATHS_PER_CYCLE = 2;
+    public static final int LOOPZ = 10;
     public static final String I_BPM = "bpmzz";
 
     private Vibrator vb;
     private boolean running = true;
+    private long[] vibrator;
 
     @Bind(R.id.hart) ImageView hart;
     @Bind(R.id.label) TextView label;
@@ -63,20 +65,22 @@ public class MainActivity extends WearableActivity {
                 + (2 * BREATHS_PER_CYCLE)       // rescue breath / delay
                 + 1;                            // initial delay
 
-        final long[] vibrator = new long[size];                // initial delay
+         vibrator = new long[size * LOOPZ];                // initial delay
 
         vibrator[0] = 0; // slight pause for animation to catch up
+        for (int x = 0; x < LOOPZ; x++){
+            int disp = + size * LOOPZ * x;
+            // add compression stuff
+            for (int i = 1 + disp; i < COMPRESSIONZ_PER_BREATH * 2 + 1; i = i + 2) {
+                vibrator[i] = (long) PULSE;
+                vibrator[i+1] = (long) delay;
+            }
 
-        // add compression stuff
-        for (int i = 1; i < COMPRESSIONZ_PER_BREATH * 2 + 1; i = i + 2) {
-            vibrator[i] = (long) PULSE;
-            vibrator[i+1] = (long) delay;
-        }
-
-        for (int i = COMPRESSIONZ_PER_BREATH * 2 + 1; i < size; i = i+2){
-            // add vibrate stuff
-            vibrator[i] = (long) BREATH_TIME;
-            vibrator[i+1] = (long) BREATH_TIME;
+            for (int i = COMPRESSIONZ_PER_BREATH * 2 + 1 + disp; i < size; i = i+2){
+                // add vibrate stuff
+                vibrator[i] = (long) BREATH_TIME;
+                vibrator[i+1] = (long) BREATH_TIME*2;
+            }
         }
 
         pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
@@ -88,8 +92,8 @@ public class MainActivity extends WearableActivity {
                     vb.cancel();
                     pulseAnimation.cancel();
                 } else {
-                    vb.vibrate(vibrator, -1);
                     pulseAnimation.start();
+                    vb.vibrate(vibrator, 0);
                 }
                 running = (!running);
             }
@@ -100,7 +104,6 @@ public class MainActivity extends WearableActivity {
 
         vb = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
         vb.vibrate(vibrator, 0);
-
     }
 
     @Override
@@ -108,13 +111,14 @@ public class MainActivity extends WearableActivity {
         super.onEnterAmbient(ambientDetails);
         // stop animations and make the hart black
         pulseAnimation.cancel();
-//        hart.setImageDrawable(getResources().getDrawable(R.drawable.hart_dark, null));
         hart.setColorFilter(Color.parseColor("#0f0f0f"), PorterDuff.Mode.DARKEN);
+        vb.vibrate(vibrator, 0);
     }
 
     @Override
     public void onUpdateAmbient() {
         super.onUpdateAmbient();
+        vb.vibrate(vibrator, 0);
     }
 
     @Override
@@ -123,6 +127,7 @@ public class MainActivity extends WearableActivity {
         // restart animations and turn hart red
         pulseAnimation.start();
         hart.setColorFilter(null);
+        vb.vibrate(vibrator, 0);
     }
 
     @Override

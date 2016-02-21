@@ -5,13 +5,13 @@ CPsmaRt utilizes smart watches to help people perform CPR in emergency situation
 
 ## Screen Shots
 
-### Tempo Mode
+#### BPM Selection
+![BPM Selection](https://github.com/ryanrampage1/CPsmaRt/blob/master/ScreenShots/bpm_selection.png)
+
+#### Tempo Mode
 ![Tempo Mode](https://github.com/ryanrampage1/CPsmaRt/blob/master/ScreenShots/mainscreen.png)
 
-### Ambient Mode
+#### Ambient Mode
 ![Ambient Mode](https://github.com/ryanrampage1/CPsmaRt/blob/master/ScreenShots/ambient.png)
-
-### BPM Selection
-![BPM Selection](https://github.com/ryanrampage1/CPsmaRt/blob/master/ScreenShots/bpm_selection.png)
 
 Also check out the [iOS version](https://github.com/SchoonSauce/CPsmaRt)!

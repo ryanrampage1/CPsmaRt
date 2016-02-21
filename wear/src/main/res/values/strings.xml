@@ -6,27 +6,27 @@
     <string-array name="bpm">
         <item>Speech</item>
         <item>15 BPM</item>
+        <item>50 BPM</item>
+        <item>55 BPM</item>
+        <item>60 BPM</item>
+        <item>65 BPM</item>
+        <item>70 BPM</item>
+        <item>75 BPM</item>
+        <item>80 BPM</item>
+        <item>85 BPM</item>
+        <item>90 BPM</item>
+        <item>95 BPM</item>
         <item>100 BPM</item>
-        <item>101 BPM</item>
-        <item>102 BPM</item>
-        <item>103 BPM</item>
-        <item>104 BPM</item>
         <item>105 BPM</item>
-        <item>106 BPM</item>
-        <item>107 BPM</item>
-        <item>108 BPM</item>
-        <item>109 BPM</item>
         <item>110 BPM</item>
-        <item>111 BPM</item>
-        <item>112 BPM</item>
-        <item>113 BPM</item>
-        <item>114 BPM</item>
         <item>115 BPM</item>
-        <item>116 BPM</item>
-        <item>117 BPM</item>
-        <item>118 BPM</item>
-        <item>119 BPM</item>
         <item>120 BPM</item>
+        <item>125 BPM</item>
+        <item>130 BPM</item>
+        <item>135 BPM</item>
+        <item>140 BPM</item>
+        <item>145 BPM</item>
+        <item>150 BPM</item>
         <item>240 BPM</item>
     </string-array>
 

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="co.ryancasler.cpsmart.MainActivity"
+    android:background="@color/black"
     tools:deviceIds="wear">
 
     <LinearLayout
@@ -29,6 +30,7 @@
         android:layout_weight="1"
         android:textSize="20sp"
         android:id="@+id/label"
+        android:textColor="@color/white"
         android:text="40 bpm"/>
     </LinearLayout>
 

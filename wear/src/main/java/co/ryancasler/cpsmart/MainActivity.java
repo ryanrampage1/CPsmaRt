@@ -119,7 +119,7 @@ public class MainActivity extends WearableActivity {
         super.onExitAmbient();
         // restart animations and turn hart red
         pulseAnimation.start();
-        hart.setImageDrawable(getResources().getDrawable(R.drawable.hart, null));
+        hart.setImageDrawable(getResources().getDrawable(R.drawable.hart_beat, null));
     }
 
     @Override

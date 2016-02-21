@@ -33,7 +33,7 @@ public class WearableListItemLayout extends LinearLayout
         super(context, attrs, defStyle);
 
         mFadedTextAlpha = getResources().getInteger(R.integer.action_text_faded_alpha) / 100f;
-        mFadedCircleColor = getResources().getColor(R.color.grey);
+        mFadedCircleColor = getResources().getColor(android.R.color.transparent);
         mChosenCircleColor = getResources().getColor(R.color.cpr_red);
     }
 

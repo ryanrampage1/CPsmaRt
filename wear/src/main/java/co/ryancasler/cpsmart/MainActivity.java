@@ -111,7 +111,7 @@ public class MainActivity extends WearableActivity {
         super.onEnterAmbient(ambientDetails);
         // stop animations and make the hart black
         pulseAnimation.cancel();
-        hart.setColorFilter(Color.parseColor("#0f0f0f"), PorterDuff.Mode.DARKEN);
+        hart.setColorFilter(Color.parseColor("#2b2b2b"), PorterDuff.Mode.DARKEN);
         vb.vibrate(vibrator, 0);
     }
 
